@@ -14,23 +14,30 @@ app.use(cors());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mkcgo.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
-    const resultsCollection = client.db('xpeedStudio').collection("results");
+    const resultsCollection = client.db(`${process.env.DB_NAME}`).collection("results");
 
     app.post('/addCalculation', upload.single('file'), async (req, res) => {
         try {
-            const writtenText = req.body.writtenText;
-            const fileValue = req.body.fileValue;
-            const output = req.body.output;
-            const location = req.file.path;
-            const fileName = req.file.filename;
-
-            const result = await resultsCollection.insertOne({ writtenText, fileValue, output, location, fileName })
+            const data = { ...req.body, location: req.file.path, fileName: req.file.filename };
+            const result = await resultsCollection.insertOne(data);
             res.send(result);
         } 
         catch (err) {
             res.send(400);
         }
     });
+
+    app.get('/results', (req, res) => {
+        resultsCollection.find({})
+        .toArray((err, documents) => {
+           if(documents){
+                res.send(documents);
+           } 
+           else{
+                res.send(err);
+           }
+        })
+    })
 
 });
 
