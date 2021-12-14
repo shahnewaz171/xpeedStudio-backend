@@ -1,4 +1,4 @@
-## xPeedStudio-frontend [`Live`](https://calculator-mern.netlify.app)
+## xPeedStudio-backend [`Live`](https://calculator-mern.netlify.app)
 
 ## Run Server
 
@@ -21,7 +21,7 @@ heroku create
 ```
 Now deploy code:
 ```bash
-heroku create
+git push heroku main
 ```
 
 **Technology:** Node.js, Express.js, MongoDB, Multer, Nodemon, Dotenv, Cors, Body Parser\
